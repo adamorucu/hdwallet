@@ -23,12 +23,7 @@ K = [
 
 from typing import List
 
-# from hdwallet.utils import byte2int, int2byte
-def byte2int(byt: bytes) -> int:
-    return int.from_bytes(byt, 'big')
-
-def int2byte(i: int, length: int=4) -> bytes:
-    return i.to_bytes(length, 'big')
+from hdwallet.utils import byte2int, int2byte
 
 def rotr(x: int, n: int, size: int=32) -> int:
     """Rotate right"""
