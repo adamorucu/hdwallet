@@ -43,7 +43,6 @@ def maj(x: int, y: int, z: int) -> int:
 
 def bigsig0(x: int, sha: int=256) -> int:
     if sha==256:
-        print('no')
         return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22)
     else:
         return rotr(x, 28, 64) ^ rotr(x, 34, 64) ^ rotr(x, 39, 64)
@@ -102,8 +101,6 @@ def sha256(m: bytes) -> bytes:
 
     for M in blx:
         W = []
-        print(len(M))
-
         for t in range(64):
             if t < 16:
                 W.append(M[t*4:t*4+4])
@@ -162,7 +159,6 @@ def sha512(m: bytes) -> bytes:
     b = pad(m, sha=512)
     blx = parse(b, sha=512)
     for M in blx:
-        print(len(M))
         W = []
         for t in range(80):
             if t < 16:

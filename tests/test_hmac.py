@@ -1,6 +1,7 @@
+#!/usr/bin/python3
 import hashlib
 import hmac
-from hdwallet.hmac import hmac_sha512
+from hdwallet.pbkdf2 import hmac_sha512, pbkdf2
 
 
 def test_hmac_sha512():
@@ -11,11 +12,16 @@ def test_hmac_sha512():
         my = hmac_sha512(key, msg).hex()
         assert my == tr
 
+def test_pbkdf2_hmac():
+    salt = b'mnemonic'+"".encode()
+    pwd = b"army van defense carry jealous true garbage claim echo media make crunch"
+    iters = 2048
+    hl = hashlib.pbkdf2_hmac(
+	hash_name='sha512',
+	password=pwd,
+	salt= salt,
+	iterations=iters).hex()
 
-
-# def test_pbkdf2_hmac():
-    # hl = hashlib.pbkdf2_hmac(
-	# hash_name='sha512',
-	# password=sentence,
-	# salt=b'mnemonic'+passphrase.encode(),
-	# iterations=2048).hex()
+    my = pbkdf2(hmac_sha512, pwd, salt, iters).hex()
+    print(my)
+    assert my == hl
