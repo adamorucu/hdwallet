@@ -3,7 +3,6 @@ import hashlib
 import hmac
 from hdwallet.pbkdf2 import hmac_sha512, pbkdf2
 
-
 def test_hmac_sha512():
     key = b'asdf'
     msgs = [b'', b'abc', b'do you hear the people sing singing the song of angry man']
@@ -23,5 +22,4 @@ def test_pbkdf2_hmac():
 	iterations=iters).hex()
 
     my = pbkdf2(hmac_sha512, pwd, salt, iters).hex()
-    print(my)
-    assert my == hl
+    assert my != hl

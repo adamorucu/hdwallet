@@ -1,9 +1,12 @@
 #!/usr/bin/python3
 """
-SHA256 algorithm
+SHA256 and SHA512 algorithms
 
 Resource: https://nvlpubs.nist.gov/nistpubs/FIPS/NIST.FIPS.180-4.pdf
 """
+from typing import List
+
+from hdwallet.utils import byte2int, int2byte
 
 K = [
     0x428a2f98, 0x71374491, 0xb5c0fbcf, 0xe9b5dba5, 0x3956c25b,
@@ -20,10 +23,6 @@ K = [
     0x682e6ff3, 0x748f82ee, 0x78a5636f, 0x84c87814, 0x8cc70208,
     0x90befffa, 0xa4506ceb, 0xbef9a3f7, 0xc67178f2
 ]
-
-from typing import List
-
-from hdwallet.utils import byte2int, int2byte
 
 def rotr(x: int, n: int, size: int=32) -> int:
     """Rotate right"""
@@ -44,26 +43,34 @@ def maj(x: int, y: int, z: int) -> int:
 def bigsig0(x: int, sha: int=256) -> int:
     if sha==256:
         return rotr(x, 2) ^ rotr(x, 13) ^ rotr(x, 22)
-    else:
+    elif sha==512:
         return rotr(x, 28, 64) ^ rotr(x, 34, 64) ^ rotr(x, 39, 64)
+    else:
+        raise NotImplementedError
 
 def bigsig1(x: int, sha: int=256) -> int:
     if sha==256:
         return rotr(x, 6) ^ rotr(x, 11) ^ rotr(x, 25)
-    else:
+    elif sha==512:
         return rotr(x, 14, 64) ^ rotr(x, 18, 64) ^ rotr(x, 41, 64)
+    else:
+        raise NotImplementedError
 
 def sig0(x: int, sha: int=256) -> int:
     if sha==256:
         return rotr(x, 7) ^ rotr(x, 18) ^ shr(x, 3)
-    else:
+    elif sha==512:
         return rotr(x, 1, 64) ^ rotr(x, 8, 64) ^ shr(x, 7)
+    else:
+        raise NotImplementedError
 
 def sig1(x: int, sha: int=256) -> int:
     if sha==256:
         return rotr(x, 17) ^ rotr(x, 19) ^ shr(x, 10)
-    else:
+    elif sha==512:
         return rotr(x, 19, 64) ^ rotr(x, 61, 64) ^ shr(x, 6)
+    else:
+        raise NotImplementedError
 
 def pad(m: bytes, sha: int=256) -> bytes:
     """ Padding
@@ -95,9 +102,10 @@ def parse(b: bytes, sha=256) -> List[bytes]:
     return [b[i:i+N] for i in range(0, len(b), N)]
 
 def sha256(m: bytes) -> bytes:
+    """SHA256"""
     H = [0x6a09e667, 0xbb67ae85, 0x3c6ef372, 0xa54ff53a, 0x510e527f, 0x9b05688c, 0x1f83d9ab, 0x5be0cd19]
-    b = pad(m)
-    blx = parse(b)
+    by = pad(m)
+    blx = parse(by)
 
     for M in blx:
         W = []
@@ -153,11 +161,12 @@ K512 = [
 ]
 
 def sha512(m: bytes) -> bytes:
+    """SHA512"""
     H = [0x6a09e667f3bcc908, 0xbb67ae8584caa73b, 0x3c6ef372fe94f82b, 0xa54ff53a5f1d36f1,
         0x510e527fade682d1, 0x9b05688c2b3e6c1f, 0x1f83d9abfb41bd6b, 0x5be0cd19137e2179]
 
-    b = pad(m, sha=512)
-    blx = parse(b, sha=512)
+    by = pad(m, sha=512)
+    blx = parse(by, sha=512)
     for M in blx:
         W = []
         for t in range(80):
@@ -182,13 +191,3 @@ def sha512(m: bytes) -> bytes:
             a = (T1 + T2) % 2**64
         H = [(hi + alpha) % 2**64 for hi, alpha in zip(H, [a,b,c,d,e,f,g,h])]
     return b''.join(int2byte(hi, 8) for hi in H)
-
-if __name__ == '__main__':
-    print()
-    s = b'abc'
-    a = sha512(s).hex()
-    print(a)
-    print(type(a))
-    print()
-    import hashlib
-    print(hashlib.sha512(s).hexdigest())
