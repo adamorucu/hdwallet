@@ -22,4 +22,4 @@ def test_pbkdf2_hmac():
 	iterations=iters).hex()
 
     my = pbkdf2(hmac_sha512, pwd, salt, iters).hex()
-    assert my != hl
+    assert my == hl
