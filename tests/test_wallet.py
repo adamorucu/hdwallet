@@ -122,9 +122,10 @@ def test_ent2mnem():
     print(comp)
     assert all(comp)
 
-# def test_menm2seed():
-#     for vec in tvecs:
-#         seed = Wallet.menmomic2seed(vec[1], 'TREZOR').hex()
-#         print(vec[1])
-#         print(seed)
-#         assert seed == vec[2]
+def test_menm2seed():
+    for vec in tvecs:
+        seed = Wallet.menmomic2seed(vec[1], 'TREZOR').hex()
+        print(seed == vec[2])
+        print(vec[2])
+        print(seed)
+        assert seed == vec[2]

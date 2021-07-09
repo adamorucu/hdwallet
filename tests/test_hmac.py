@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 import hashlib
 import hmac
 from hdwallet.pbkdf2 import hmac_sha512, pbkdf2

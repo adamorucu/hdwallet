@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/python
 """
 Hierarchical Deterministic Wallet
 
@@ -49,16 +49,13 @@ class Wallet:
         seed = pbkdf2(hmac_sha512, mnemonic.encode(), salt, 2048)
         return seed
 
-    def get_seed(self) -> int:
-        if self.seed == None:
-            self.seed = Wallet.menmomic2seed(self.mnemonic, self.passphrase)
-        return self.seed
+    # def get_seed(self) -> int:
+    #     if self.seed == None:
+    #         self.seed = Wallet.menmomic2seed(self.mnemonic, self.passphrase)
+    #     return self.seed
 
-    def master_key(self) -> int:
-        salt = b'' + self.passphrase.encode()
-        hash = pbkdf2(hmac_sha512, self.seed.encode(), salt, 2048)
-        mid = int(len(hash)/2)
-        return hash[:mid], hash[mid:]
-
-if __name__ == "__main__":
-    wall = Wallet.generate()
+    # def master_key(self) -> int:
+    #     salt = b'' + self.passphrase.encode()
+    #     hash = pbkdf2(hmac_sha512, self.seed.encode(), salt, 2048)
+    #     mid = int(len(hash)/2)
+    #     return hash[:mid], hash[mid:]
